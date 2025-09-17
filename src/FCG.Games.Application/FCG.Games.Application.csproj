@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FCG.Games.Domain\FCG.Games.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UserCases\" />
+	<Using Include="FCG.Games.Domain" />
+	<Using Include="FCG.Games.Application.Contracts" />
+	<Using Include="FCG.Games.Application.UserCases" />
   </ItemGroup>
 
 </Project>

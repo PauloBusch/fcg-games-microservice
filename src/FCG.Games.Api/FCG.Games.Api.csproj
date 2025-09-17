@@ -18,4 +18,10 @@
     <ProjectReference Include="..\FCG.Games.Infrastructure.ElasticSearch\FCG.Games.Infrastructure.ElasticSearch.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<Using Include="FCG.Games.Application.Contracts" />
+	<Using Include="FCG.Games.Application.UserCases" />
+	<Using Include="Microsoft.AspNetCore.Mvc" />
+  </ItemGroup>
+
 </Project>
