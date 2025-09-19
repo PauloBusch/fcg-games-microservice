@@ -1,10 +1,14 @@
 ﻿namespace FCG.Games.Domain;
 
-public class Evaluation : EntityBase
+public class Evaluation(
+    uint stars,
+    string? comment,
+    User user
+) : EntityBase
 {
-    public int Stars { get; private set; }
+    public uint Stars { get; private set; } = stars;
 
-    public string? Comment { get; private set; }
+    public string? Comment { get; private set; } = comment;
 
-    public virtual User User { get; private set; }
+    public User User { get; private set; } = user;
 }

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,9 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+	<Using Include="MediatR" />
 	<Using Include="FCG.Games.Domain" />
+	<Using Include="FCG.Games.Application._Common" />
 	<Using Include="FCG.Games.Application.Contracts" />
-	<Using Include="FCG.Games.Application.UserCases" />
+	<Using Include="FCG.Games.Application.UseCases" />
+	<Using Include="FCG.Games.Domain._Common.Exceptions" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace FCG.Games.Domain;
 
-public class Download : EntityBase
+public class Download(DateTime date) : EntityBase
 {
-    public DateTime Date { get; private set; }
+    public DateTime Date { get; private set; } = date;
 }

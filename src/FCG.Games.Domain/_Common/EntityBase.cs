@@ -1,16 +1,6 @@
 ﻿namespace FCG.Games.Domain._Common;
 
-public abstract class EntityBase
+public abstract class EntityBase(Guid? key = null)
 {
-    protected EntityBase()
-    {
-        Key = Guid.NewGuid();
-    }
-
-    protected EntityBase(Guid key)
-    {
-        Key = key;
-    }
-
-    public Guid Key { get; protected set; }
+    public Guid Key { get; protected set; } = key ?? Guid.NewGuid();
 }

@@ -3,18 +3,11 @@ using Nest;
 
 namespace FCG.Games.Infrastructure.ElasticSearch;
 
-public class GameRepository : IGameRepository
+public class GameRepository(IElasticClient elasticClient) : IGameRepository
 {
-    private readonly IElasticClient _elasticClient;
-
-    public GameRepository(IElasticClient elasticClient)
-    {
-        _elasticClient = elasticClient;
-    }
-
     public async Task<bool> ExistByTitleAsync(string title, Guid? ignoreKey = null, CancellationToken ct = default)
     {
-        var response = await _elasticClient.SearchAsync<Game>(s => s
+        var response = await elasticClient.SearchAsync<Game>(s => s
             .Query(q => q
                 .Bool(b => b
                     .Must(m => m
@@ -34,6 +27,6 @@ public class GameRepository : IGameRepository
 
     public async Task IndexAsync(Game game, CancellationToken ct)
     {
-        await _elasticClient.IndexDocumentAsync(game, ct);
+        await elasticClient.IndexDocumentAsync(game, ct);
     }
 }

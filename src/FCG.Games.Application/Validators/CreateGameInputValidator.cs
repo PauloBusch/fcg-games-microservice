@@ -1,18 +1,14 @@
-﻿using FCG.Games.Application.Contracts;
-using FCG.Games.Domain;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace FCG.Games.Application.Validators;
 
-public class CreateGameInputValidator : AbstractValidator<CreateGameRequest>
+public class CreateGameInputValidator : AbstractValidator<CreateGameInput>
 {
-    public CreateGameInputValidator(IGameRepository gameRepository)
+    public CreateGameInputValidator()
     {
         RuleFor(x => x.Title)
             .NotEmpty()
-            .MaximumLength(100)
-            .MustAsync((r, _, ct) => gameRepository.ExistByTitleAsync(r.Title, r.Key, ct))
-            .WithMessage(r => $"The title '{r.Title}' is already in use.");
+            .MaximumLength(100);
 
         RuleFor(x => x.Description)
             .NotEmpty()
@@ -23,7 +19,7 @@ public class CreateGameInputValidator : AbstractValidator<CreateGameRequest>
             .ChildRules(ValidateCatalog);
     }
 
-    private static void ValidateCatalog(InlineValidator<CatalogModel> validator)
+    private static void ValidateCatalog(InlineValidator<CatalogDto> validator)
     {
         validator.RuleFor(c => c.Key)
             .NotEmpty();

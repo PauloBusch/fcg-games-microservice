@@ -2,12 +2,18 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class GamesController : ControllerBase
+public class GamesController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
     public async Task<CreateGameResponse> CreateGame(
-        [FromServices] CreateGameUseCase useCase,
         [FromBody] CreateGameRequest request,
         CancellationToken ct
-    ) => await useCase.ExecuteAsync(request, ct);
+    )
+    {
+        var input = request.ToUseCase();
+
+        var output = await mediator.Send(input, ct);
+
+        return output.ToResponse();
+    }
 }

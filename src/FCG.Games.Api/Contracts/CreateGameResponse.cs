@@ -1,6 +1,6 @@
-﻿namespace FCG.Games.Application.Contracts;
+﻿namespace FCG.Games.Api.Contracts;
 
-public record CreateGameRequest(
+public record CreateGameResponse(
     Guid Key,
     string Title,
     string Description,

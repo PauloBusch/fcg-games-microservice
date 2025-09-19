@@ -27,9 +27,7 @@ public static class ElasticSearchModule
         var connectionSetting = new ConnectionSettings(new Uri(settings.Endpoint))
             .DefaultIndex(settings.IndexName);
 
-        var elasticClient = new ElasticClient(connectionSetting);
-
-        services.AddSingleton<IElasticClient>(elasticClient);
+        services.AddSingleton<IElasticClient>(_ => new ElasticClient(connectionSetting));
 
         services.AddScoped<IGameRepository, GameRepository>();
 

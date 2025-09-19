@@ -1,6 +1,6 @@
 ﻿namespace FCG.Games.Domain;
 
-public class User : EntityBase
+public class User(string name) : EntityBase
 {
-    public string Name { get; private set; }
+    public string Name { get; private set; } = name;
 }

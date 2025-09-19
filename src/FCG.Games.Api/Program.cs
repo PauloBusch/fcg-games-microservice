@@ -1,11 +1,18 @@
+using FCG.Games.Application.UseCases;
 using FCG.Games.Infrastructure.ElasticSearch;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+var services = builder.Services;
 
-builder.Services
+services
+    .AddControllers();
+
+services
     .AddOpenApi()
+    .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateGameUseCase>());
+    
+services
     .AddElasticSearchModule(builder.Configuration);
 
 var app = builder.Build();

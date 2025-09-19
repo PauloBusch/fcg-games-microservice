@@ -1,1 +1,13 @@
-@FCG.Games.Api_HostAddress = http://localhost:5237
+@FCG.Games.Api_HostAddress = http://localhost:5237/api
+
+POST {{FCG.API_HostAddress}}/games
+Accept: application/json
+Content-Type: application/json
+{
+  "title": "The Legend of Zelda: Breath of the Wild10",
+  "description": "Um jogo de aventura e ação em um vasto mundo aberto",
+  "catalog": {
+    "key": "14d0b557-2fde-4aa9-9e76-d12ec4ea2cb1",
+    "name": "Cloud"
+  }
+}

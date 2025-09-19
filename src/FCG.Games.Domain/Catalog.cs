@@ -1,14 +1,9 @@
 ﻿namespace FCG.Games.Domain;
 
-public class Catalog : EntityBase
+public class Catalog(
+    Guid key,
+    string name
+) : EntityBase(key)
 {
-    public Catalog(
-        Guid key,
-        string name
-    ) : base(key)
-    {
-        Name = name;
-    }
-
-    public string Name { get; private set; }
+    public string Name { get; private set; } = name;
 }

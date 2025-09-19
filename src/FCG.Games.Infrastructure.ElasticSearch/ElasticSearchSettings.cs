@@ -2,9 +2,9 @@
 
 public class ElasticSearchSettings
 {
-    public string Endpoint { get; set; }
+    public required string Endpoint { get; set; }
 
-    public string ApiKey { get; set; }
+    public required string ApiKey { get; set; }
 
-    public string IndexName { get; set; }
+    public required string IndexName { get; set; }
 }
