@@ -1,0 +1,69 @@
+﻿using FCG.Games.Domain._Common.Exceptions;
+using System.Net;
+using System.Text.Json.Serialization;
+
+namespace FCG.Games.Api._Common;
+
+public class ErrorResponse
+{
+    public ErrorResponse(HttpStatusCode statusCode, string message)
+    {
+        StatusCode = statusCode;
+        Message = message;
+    }
+
+    public ErrorResponse(FcgDuplicateException duplicateException)
+    {
+        StatusCode = HttpStatusCode.Conflict;
+        Message = duplicateException.Message;
+        Entity = duplicateException.Entity;
+        Key = duplicateException.Key;
+    }
+
+    public ErrorResponse(FcgNotFoundException notFoundException)
+    {
+        StatusCode = HttpStatusCode.NotFound;
+        Message = notFoundException.Message;
+        Key = notFoundException.Key;
+        Entity = notFoundException.Entity;
+    }
+
+    public ErrorResponse(FcgValidationException validationException)
+    {
+        StatusCode = HttpStatusCode.BadRequest;
+        Message = validationException.Message;
+        Field = validationException.Field;
+    }
+
+    public ErrorResponse(FcgExceptionCollection exceptionCollection)
+    {
+        var exceptions = exceptionCollection.Exceptions;
+
+        Errors = [
+            ..exceptions
+                .OfType<FcgDuplicateException>()
+                .Select(e => new ErrorResponse(e)),
+            ..exceptions
+                .OfType<FcgNotFoundException>()
+                .Select(e => new ErrorResponse(e)),
+            ..exceptions
+                .OfType<FcgValidationException>()
+                .Select(e => new ErrorResponse(e)),
+        ];
+        Message = exceptionCollection.Message;
+        StatusCode = Errors.Max(e => e.StatusCode);
+    }
+
+    [JsonIgnore]
+    public HttpStatusCode StatusCode { get; }
+
+    public string Message { get; }
+
+    public Guid? Key { get; }
+
+    public string? Field { get; }
+
+    public string? Entity { get; }
+
+    public IReadOnlyCollection<ErrorResponse>? Errors { get; }
+}

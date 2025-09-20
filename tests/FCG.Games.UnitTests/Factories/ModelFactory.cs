@@ -11,7 +11,7 @@ public class ModelFactory
        CatalogDto
     );
 
-    public CatalogDto CatalogDto => new(
+    private CatalogDto CatalogDto => new(
         Guid.NewGuid(),
         "Catalog Name"
     );

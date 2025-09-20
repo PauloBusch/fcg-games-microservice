@@ -1,7 +1,12 @@
 using FCG.Games.Api._Common;
+using FCG.Games.Api._Common.Middlewares;
+using FCG.Games.Api._Common.Pipelines;
 using FCG.Games.Application.UseCases;
+using FCG.Games.Application.Validators;
 using FCG.Games.Infrastructure.ElasticSearch;
+using FluentValidation;
 using HealthChecks.UI.Client;
+using MediatR.Extensions.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Prometheus;
 
@@ -19,7 +24,9 @@ services
 
 services
     .AddOpenApi()
-    .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateGameUseCase>());
+    .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateGameUseCase>())
+    .AddValidatorsFromAssemblyContaining<CreateGameInputValidator>()
+    .AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidatorPipeline<,>));
 
 var elasticSearchSettings = appSettings.ElasticSearchSettings;
 
@@ -44,9 +51,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 
-app.UseAuthorization();
 
-app.UseHttpMetrics();
+app
+    .UseMiddleware<ExceptionMiddleware>()
+    .UseAuthorization()
+    .UseHttpMetrics();
 
 app.MapHealthChecks(
     "/health",

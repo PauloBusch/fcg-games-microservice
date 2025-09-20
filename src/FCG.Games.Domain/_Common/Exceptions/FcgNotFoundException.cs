@@ -4,8 +4,9 @@ public class FcgNotFoundException(
     Guid key,
     string entity,
     string message
-) : Exception(message)
+) : FcgException(message)
 {
     public Guid Key { get; } = key;
+
     public string Entity { get; } = entity;
 }

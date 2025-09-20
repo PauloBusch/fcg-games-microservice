@@ -3,7 +3,7 @@
 public class FcgValidationException(
     string field,
     string message
-) : Exception(message)
+) : FcgException(message)
 {
     public string Field { get; } = field;
 }

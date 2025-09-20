@@ -7,16 +7,9 @@ public class GameRepository(IElasticClient elasticClient) : IGameRepository
 {
     public async Task<Game?> GetByKeyAsync(Guid key, CancellationToken ct)
     {
-        var response = await elasticClient.SearchAsync<Game>(s => s
-            .Query(q => q
-                .Term(t => t
-                    .Field(f => f.Key)
-                    .Value(key)
-                )
-            )
-            .Size(1), ct);
+        var response = await elasticClient.GetAsync<Game>(key, ct: ct);
 
-        return response.Documents.FirstOrDefault();
+        return response.Found ? response.Source : null;
     }
 
     public async Task<bool> ExistByTitleAsync(string title, Guid? ignoreKey = null, CancellationToken ct = default)
