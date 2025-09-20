@@ -7,9 +7,9 @@ public interface IUseCase<in TInput, TOutput>
     new Task<TOutput> Handle(TInput input, CancellationToken ct);
 }
 
-public interface IUseCaseHandler<in TInput>
+public interface IUseCase<in TInput>
     : IRequestHandler<TInput>
-    where TInput : IUseCase
+    where TInput : IUseCaseInput
 {
     new Task Handle(TInput input, CancellationToken ct);
 }
