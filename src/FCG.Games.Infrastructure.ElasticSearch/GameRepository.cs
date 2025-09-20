@@ -5,6 +5,20 @@ namespace FCG.Games.Infrastructure.ElasticSearch;
 
 public class GameRepository(IElasticClient elasticClient) : IGameRepository
 {
+    public async Task<Game?> GetByKeyAsync(Guid key, CancellationToken ct)
+    {
+        var response = await elasticClient.SearchAsync<Game>(s => s
+            .Query(q => q
+                .Term(t => t
+                    .Field(f => f.Key)
+                    .Value(key)
+                )
+            )
+            .Size(1), ct);
+
+        return response.Documents.FirstOrDefault();
+    }
+
     public async Task<bool> ExistByTitleAsync(string title, Guid? ignoreKey = null, CancellationToken ct = default)
     {
         var response = await elasticClient.SearchAsync<Game>(s => s

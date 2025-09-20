@@ -1,14 +1,34 @@
-﻿using FCG.Games.IntegrationTests.Factories;
-using Microsoft.AspNetCore.TestHost;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 
-namespace FCG.Games.UnitTests;
+namespace FCG.Games.IntegrationTests;
 
-public class FcgFixture
+public class FcgFixture : IClassFixture<WebApplicationFactory<Program>>, IDisposable
 {
+    public HttpClient Client { get; }
 
-    public HttpClient Client { get; private set; }
+    public WebApplicationFactory<Program> Factory { get; }
 
-    public TestServer Server { get; private set; }
+    public CancellationToken CancellationToken { get; }
 
-    public EntityFactory EntityFactory { get; private set; }
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+
+    public FcgFixture(WebApplicationFactory<Program> factory)
+    {
+        CancellationToken = _cancellationTokenSource.Token;
+        Factory = factory.WithWebHostBuilder(builder =>
+        {
+            builder.UseEnvironment("TestAutomation");
+        });
+
+        Client = Factory.CreateClient();
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        Client.Dispose();
+        Factory.Dispose();
+    }
 }

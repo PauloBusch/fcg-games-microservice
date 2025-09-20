@@ -4,7 +4,7 @@ namespace FCG.Games.UnitTests._Common;
 
 public abstract class TestBase(FcgFixture fixture) : IClassFixture<FcgFixture>
 {
-    protected CancellationToken CancellationToken { get; private set; } = fixture.CancellationToken;
+    protected CancellationToken CancellationToken { get; } = fixture.CancellationToken;
 
-    protected static ModelFactory ModelFactory { get; private set; } = new();
+    protected static ModelFactory ModelFactory { get; } = new();
 }

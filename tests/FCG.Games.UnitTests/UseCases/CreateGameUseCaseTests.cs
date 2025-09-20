@@ -4,7 +4,7 @@ namespace FCG.Games.UnitTests.UseCases;
 
 public class CreateGameUseCaseTests : UseCaseTestBase<CreateGameUseCase>
 {
-    private  IGameRepository _gameRepository;
+    private IGameRepository _gameRepository;
 
     public CreateGameUseCaseTests(FcgFixture fixture) : base(fixture)
     {

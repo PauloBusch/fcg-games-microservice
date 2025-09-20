@@ -4,8 +4,19 @@
 [Route("api/[controller]")]
 public class GamesController(IMediator mediator) : ControllerBase
 {
+    [HttpGet("{key:guid}")]
+    public async Task<ActionResult<CreateGameResponse>> GetGameByIdAsync(
+        [FromRoute] Guid key,
+        CancellationToken ct
+    )
+    {
+        // TODO: Implement this action
+
+        return NotFound();
+    }
+
     [HttpPost]
-    public async Task<CreateGameResponse> CreateGame(
+    public async Task<ActionResult<CreateGameResponse>> CreateGameAsync(
         [FromBody] CreateGameRequest request,
         CancellationToken ct
     )
@@ -14,6 +25,12 @@ public class GamesController(IMediator mediator) : ControllerBase
 
         var output = await mediator.Send(input, ct);
 
-        return output.ToResponse();
+        var response = output.ToResponse();
+
+        return CreatedAtAction(
+            nameof(GetGameByIdAsync),
+            new { key = response.Key },
+            response
+        );
     }
 }

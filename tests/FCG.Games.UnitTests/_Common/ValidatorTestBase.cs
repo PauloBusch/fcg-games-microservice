@@ -9,6 +9,4 @@ public abstract class ValidatorTestBase<TValidator>(FcgFixture fixture) : TestBa
     protected readonly NSubstituteAutoMocker<TValidator> AutoMocker = new();
 
     protected TValidator Validator => AutoMocker.ClassUnderTest;
-
-    protected TMock GetMock<TMock>() where TMock : class => AutoMocker.Get<TMock>();
 }
