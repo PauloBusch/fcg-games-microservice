@@ -1,7 +1,9 @@
+using FCG.Games.Api._Common;
 using FCG.Games.Application.UseCases;
 using FCG.Games.Infrastructure.ElasticSearch;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseHttpMetrics();
 
 app.MapHealthChecks(
     "/health",
@@ -53,5 +55,9 @@ app.MapHealthChecks(
             .WriteHealthCheckUIResponse
     }
 );
+
+app.MapMetrics("/metrics");
+
+app.MapControllers();
 
 app.Run();

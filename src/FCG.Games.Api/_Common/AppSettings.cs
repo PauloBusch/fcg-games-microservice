@@ -1,6 +1,6 @@
 ﻿using FCG.Games.Infrastructure.ElasticSearch;
 
-namespace FCG.Games.Api.Contracts;
+namespace FCG.Games.Api._Common;
 
 public class AppSettings
 {
