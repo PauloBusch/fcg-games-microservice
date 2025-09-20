@@ -1,9 +1,16 @@
 using FCG.Games.Application.UseCases;
 using FCG.Games.Infrastructure.ElasticSearch;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
+
+var appSettings = builder.Configuration
+    .Get<AppSettings>();
+
+ArgumentNullException.ThrowIfNull(appSettings);
 
 services
     .AddControllers();
@@ -11,9 +18,24 @@ services
 services
     .AddOpenApi()
     .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateGameUseCase>());
-    
+
+var elasticSearchSettings = appSettings.ElasticSearchSettings;
+
 services
-    .AddElasticSearchModule(builder.Configuration);
+    .AddElasticSearchModule(elasticSearchSettings);
+
+services
+    .AddHealthChecks()
+    .AddElasticsearch(
+        options =>
+        {
+            options.UseServer(elasticSearchSettings.Endpoint);
+            options.UseApiKey(elasticSearchSettings.ApiKey);
+        },
+        name: "elasticsearch",
+        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,
+        tags: [ "ready", "elasticsearch" ]
+    );
 
 var app = builder.Build();
 
@@ -23,5 +45,13 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks(
+    "/health",
+    new HealthCheckOptions {
+        ResponseWriter = UIResponseWriter
+            .WriteHealthCheckUIResponse
+    }
+);
 
 app.Run();
