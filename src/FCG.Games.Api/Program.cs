@@ -78,3 +78,5 @@ app.MapMetrics("/metrics");
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

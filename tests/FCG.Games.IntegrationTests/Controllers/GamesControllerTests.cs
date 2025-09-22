@@ -55,4 +55,35 @@ public class GamesControllerTests : ControllerTestBase
         game
             .ShouldBeNull();
     }
+
+    [Fact]
+    public async Task ShouldGetGameAsync()
+    {
+        var game = EntityFactory.Game;
+
+        await _gameRepository.IndexAsync(game, CancellationToken);
+
+        var (getHttpMessage, getResponse) = await Requester.GetAsync<CreateGameResponse>(
+            new Uri($"{Uri}/{game.Key}"),
+            ct: CancellationToken
+        );
+
+        getHttpMessage.StatusCode.ShouldBe(HttpStatusCode.OK);
+        getResponse.ShouldNotBeNull();
+        getResponse.Key.ShouldBe(game.Key);
+        getResponse.Title.ShouldBe(game.Title);
+        getResponse.Description.ShouldBe(game.Description);
+    }
+
+    [Fact]
+    public async Task ShouldReturnNotFoundForMissingGameAsync()
+    {
+        var missingKey = Guid.NewGuid();
+        var getUri = new Uri($"{Uri}/{missingKey}");
+
+        var (httpMessage, response) = await Requester.GetAsync<CreateGameResponse>(getUri, null, CancellationToken);
+
+        httpMessage.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        response.ShouldBeNull();
+    }
 }

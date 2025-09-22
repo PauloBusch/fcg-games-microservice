@@ -1,5 +1,4 @@
-﻿
-namespace FCG.Games.Application.UseCases;
+﻿namespace FCG.Games.Application.UseCases;
 
 public class CreateGameUseCase(IGameRepository gameRepository) : IUseCase<CreateGameInput, CreateGameOutput>
 {
@@ -18,11 +17,6 @@ public class CreateGameUseCase(IGameRepository gameRepository) : IUseCase<Create
 
         await gameRepository.IndexAsync(game, ct);
 
-        return new CreateGameOutput(
-            game.Key,
-            game.Title,
-            game.Description,
-            new CatalogDto(game.Catalog)
-        );
+        return new CreateGameOutput(game);
     }
 }

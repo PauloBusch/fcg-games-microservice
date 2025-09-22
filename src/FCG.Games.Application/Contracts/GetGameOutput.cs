@@ -1,13 +1,13 @@
 ﻿namespace FCG.Games.Application.Contracts;
 
-public record CreateGameOutput(
+public record GetGameOutput(
     Guid Key,
     string Title,
     string Description,
     CatalogDto Catalog
 )
 {
-    public CreateGameOutput(Game game)
+    public GetGameOutput(Game game)
         : this(
             game.Key,
             game.Title,

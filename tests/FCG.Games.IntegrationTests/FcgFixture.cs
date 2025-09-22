@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Microsoft.Extensions.Configuration;
 
 namespace FCG.Games.IntegrationTests;
 
-public class FcgFixture : IClassFixture<WebApplicationFactory<Program>>, IDisposable
+public class FcgFixture : IDisposable
 {
     public HttpClient Client { get; }
 
@@ -14,15 +14,25 @@ public class FcgFixture : IClassFixture<WebApplicationFactory<Program>>, IDispos
 
     private readonly CancellationTokenSource _cancellationTokenSource = new();
 
-    public FcgFixture(WebApplicationFactory<Program> factory)
+    private const string Environment = "TestAutomation";
+
+    public FcgFixture()
     {
         CancellationToken = _cancellationTokenSource.Token;
-        Factory = factory.WithWebHostBuilder(builder =>
-        {
-            builder.UseEnvironment("TestAutomation");
-        });
+
+        Factory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder =>
+            {
+                builder
+                    .UseEnvironment(Environment)
+                    .ConfigureAppConfiguration((_, config) =>
+                    {
+                        config.AddJsonFile($"appsettings.{Environment}.json", optional: false, reloadOnChange: true);
+                    });
+            });
 
         Client = Factory.CreateClient();
+        Client.BaseAddress = new Uri("http://localhost:5237/api/");
     }
 
     public void Dispose()

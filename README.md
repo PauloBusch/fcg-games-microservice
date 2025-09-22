@@ -75,7 +75,7 @@ O projeto possui testes unitários e de integração localizados na pasta `tests
 	```sh
 	dotnet run --project src/FCG.Games.Api/FCG.Games.Api.csproj
 	```
-4. Acesse a API via: [http://localhost:5000](http://localhost:5000)
+4. Acesse a documentação da API via: [http://localhost:5237/swagger/index.html](http://localhost:5237/swagger/index.html)
 
 ## Observações
 

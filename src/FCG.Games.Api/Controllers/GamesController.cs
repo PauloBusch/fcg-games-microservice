@@ -5,14 +5,19 @@
 public class GamesController(IMediator mediator) : ControllerBase
 {
     [HttpGet("{key:guid}")]
-    public async Task<ActionResult<CreateGameResponse>> GetGameByIdAsync(
+    [ActionName(nameof(GetGameByIdAsync))]
+    public async Task<ActionResult<GetGameResponse>> GetGameByIdAsync(
         [FromRoute] Guid key,
         CancellationToken ct
     )
     {
-        // TODO: Implement this action
+        var input = new GetGameInput(key);
 
-        return NotFound();
+        var output = await mediator.Send(input, ct);
+
+        var response = output.ToResponse();
+
+        return Ok(response);
     }
 
     [HttpPost]
