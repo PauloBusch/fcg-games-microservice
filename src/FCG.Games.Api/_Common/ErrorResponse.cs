@@ -49,8 +49,13 @@ public class ErrorResponse
             ..exceptions
                 .OfType<FcgValidationException>()
                 .Select(e => new ErrorResponse(e)),
+            ..exceptions
+                .OfType<FcgExceptionCollection>()
+                .Select(e => new ErrorResponse(e)),
         ];
+
         Message = exceptionCollection.Message;
+
         StatusCode = Errors.Max(e => e.StatusCode);
     }
 

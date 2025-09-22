@@ -1,4 +1,5 @@
 using FCG.Games.Api._Common;
+using FCG.Games.Api._Common.Extensions;
 using FCG.Games.Api._Common.Middlewares;
 using FCG.Games.Api._Common.Pipelines;
 using FCG.Games.Application.UseCases;
@@ -24,6 +25,7 @@ services
 
 services
     .AddOpenApi()
+    .AddFcgGamesApiSwagger()
     .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateGameUseCase>())
     .AddValidatorsFromAssemblyContaining<CreateGameInputValidator>()
     .AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidatorPipeline<,>));
@@ -49,7 +51,13 @@ services
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FCG Games API"));
+
     app.MapOpenApi();
+}
 
 
 app
