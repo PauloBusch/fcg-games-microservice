@@ -35,6 +35,7 @@
     <Using Include="Shouldly" />
     <Using Include="System.Net" />
     <Using Include="System.Net.Http.Json" />
+    <Using Include="FCG.Games.Api._Common" />
     <Using Include="FCG.Games.IntegrationTests._Common" />
     <Using Include="FCG.Games.Domain" />
     <Using Include="FCG.Games.Domain._Common.Exceptions" />

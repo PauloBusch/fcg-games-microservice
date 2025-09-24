@@ -1,9 +1,9 @@
 ﻿using FCG.Games.Domain;
-using Nest;
+using OpenSearch.Client;
 
 namespace FCG.Games.Infrastructure.ElasticSearch;
 
-public class GameRepository(IElasticClient elasticClient) : IGameRepository
+public class GameRepository(IOpenSearchClient elasticClient) : IGameRepository
 {
     public async Task<Game?> GetByKeyAsync(Guid key, CancellationToken ct)
     {
@@ -18,10 +18,7 @@ public class GameRepository(IElasticClient elasticClient) : IGameRepository
             .Query(q => q
                 .Bool(b => b
                     .Must(m => m
-                        .Match(ma => ma
-                            .Field(f => f.Title)
-                            .Query(title)
-                        )
+                        .Term(t => t.Field(f => f.Title).Value(title))
                     )
                     .MustNot(mn => mn
                         .Term(t => t.Key, ignoreKey)

@@ -41,7 +41,6 @@ services
         options =>
         {
             options.UseServer(elasticSearchSettings.Endpoint);
-            options.UseApiKey(elasticSearchSettings.ApiKey);
         },
         name: "elasticsearch",
         failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy,

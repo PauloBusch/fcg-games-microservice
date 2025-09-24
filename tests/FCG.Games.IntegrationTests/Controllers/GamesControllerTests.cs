@@ -38,20 +38,20 @@ public class GamesControllerTests : ControllerTestBase
     public async Task ShouldRejectRequestAsync()
     {
         var request = ModelFactory.CreateGameRequest
-            with { Title = default };
+            with { Title = string.Empty };
 
         var (httpMessage, response) = await Requester
-            .PostAsync<CreateGameResponse>(Uri, request, CancellationToken);
+            .PostAsync<ErrorResponse>(Uri, request, CancellationToken);
 
         httpMessage.StatusCode
             .ShouldBe(HttpStatusCode.BadRequest);
-
         response
-            .ShouldBeNull();
+            .ShouldNotBeNull();
+        response.Errors
+            .ShouldNotBeEmpty();
 
         var game = await _gameRepository
-            .GetByKeyAsync(response.Key, CancellationToken);
-
+            .GetByKeyAsync(request.Key.Value, CancellationToken);
         game
             .ShouldBeNull();
     }
@@ -68,11 +68,16 @@ public class GamesControllerTests : ControllerTestBase
             ct: CancellationToken
         );
 
-        getHttpMessage.StatusCode.ShouldBe(HttpStatusCode.OK);
-        getResponse.ShouldNotBeNull();
-        getResponse.Key.ShouldBe(game.Key);
-        getResponse.Title.ShouldBe(game.Title);
-        getResponse.Description.ShouldBe(game.Description);
+        getHttpMessage.StatusCode
+            .ShouldBe(HttpStatusCode.OK);
+        getResponse
+            .ShouldNotBeNull();
+        getResponse.Key
+            .ShouldBe(game.Key);
+        getResponse.Title
+            .ShouldBe(game.Title);
+        getResponse.Description
+            .ShouldBe(game.Description);
     }
 
     [Fact]
@@ -81,9 +86,15 @@ public class GamesControllerTests : ControllerTestBase
         var missingKey = Guid.NewGuid();
         var getUri = new Uri($"{Uri}/{missingKey}");
 
-        var (httpMessage, response) = await Requester.GetAsync<CreateGameResponse>(getUri, null, CancellationToken);
+        var (httpMessage, response) = await Requester.GetAsync<ErrorResponse>(getUri, null, CancellationToken);
 
-        httpMessage.StatusCode.ShouldBe(HttpStatusCode.NotFound);
-        response.ShouldBeNull();
+        httpMessage.StatusCode
+            .ShouldBe(HttpStatusCode.NotFound);        
+        response
+            .ShouldNotBeNull();
+        response.Key
+            .ShouldBe(missingKey);
+        response.Message
+            .ShouldBe($"Game with key '{missingKey}' was not found.");
     }
 }

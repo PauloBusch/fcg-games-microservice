@@ -59,16 +59,18 @@ public class ErrorResponse
         StatusCode = Errors.Max(e => e.StatusCode);
     }
 
+    public ErrorResponse() { }
+
     [JsonIgnore]
-    public HttpStatusCode StatusCode { get; }
+    public HttpStatusCode StatusCode { get; set; }
 
-    public string Message { get; }
+    public string Message { get; set; }
 
-    public Guid? Key { get; }
+    public Guid? Key { get; set; }
 
-    public string? Field { get; }
+    public string? Field { get; set; }
 
-    public string? Entity { get; }
+    public string? Entity { get; set; }
 
-    public IReadOnlyCollection<ErrorResponse>? Errors { get; }
+    public IReadOnlyCollection<ErrorResponse>? Errors { get; set; }
 }

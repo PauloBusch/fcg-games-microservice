@@ -1,6 +1,11 @@
-﻿using FCG.Games.Domain;
+﻿using Amazon;
+using Amazon.Runtime;
+using FCG.Games.Domain;
 using Microsoft.Extensions.DependencyInjection;
-using Nest;
+using OpenSearch.Client;
+using OpenSearch.Client.JsonNetSerializer;
+using OpenSearch.Net;
+using OpenSearch.Net.Auth.AwsSigV4;
 
 namespace FCG.Games.Infrastructure.ElasticSearch;
 
@@ -13,14 +18,33 @@ public static class ElasticSearchModule
     {
         settings.EnsureSettings();
 
-        var connectionSetting = new ConnectionSettings(new Uri(settings.Endpoint))
-            .DefaultIndex(settings.IndexName);
+        var connectionSetting = GetConnectionString(settings);
 
-        services.AddSingleton<IElasticClient>(_ => new ElasticClient(connectionSetting));
+        services.AddSingleton<IOpenSearchClient>(_ => new OpenSearchClient(connectionSetting));
 
         services.AddScoped<IGameRepository, GameRepository>();
 
         return services;
+    }
+
+    private static ConnectionSettings GetConnectionString(ElasticSearchSettings settings)
+    {
+
+        var credentials = new BasicAWSCredentials(settings.AccessKey, settings.Secret);
+
+        var region = RegionEndpoint.GetBySystemName(settings.Region);
+
+        var awsConnection = new AwsSigV4HttpConnection(credentials, region);
+
+        var pool = new SingleNodeConnectionPool(new Uri(settings.Endpoint));
+
+        var connectionSetting = new ConnectionSettings(pool, awsConnection, sourceSerializer: JsonNetSerializer.Default)
+            .DefaultMappingFor<Game>(g => g
+                .IdProperty(p => p.Key)
+                .IndexName(settings.IndexName)
+            );
+
+        return connectionSetting;
     }
 
     private static ElasticSearchSettings EnsureSettings(this ElasticSearchSettings settings)
@@ -29,7 +53,11 @@ public static class ElasticSearchModule
 
         ArgumentException.ThrowIfNullOrWhiteSpace(settings.Endpoint);
 
-        ArgumentException.ThrowIfNullOrWhiteSpace(settings.ApiKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(settings.AccessKey);
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(settings.Secret);
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(settings.Region);
 
         ArgumentException.ThrowIfNullOrWhiteSpace(settings.IndexName);
 
