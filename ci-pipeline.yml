@@ -1,0 +1,67 @@
+version: 0.2
+
+env:
+  variables:
+    DOTNET_VERSION: "9.0"
+    CONFIGURATION: "Release"
+
+phases:
+  install:
+    commands:
+      - apt-get update
+
+      - echo Instalando Docker
+      - apt-get install -y docker.io
+      
+      - echo Instalando AWS CLI
+      - apt-get install -y awscli
+
+      - echo Instalando ReportGenerator
+      - dotnet tool install --global dotnet-reportgenerator-globaltool
+      - export PATH="$PATH:/root/.dotnet/tools"
+
+  pre_build:
+    commands:
+      - echo Restaurando dependências
+      - dotnet restore
+
+      - echo Autenticando no ECR
+      - aws ecr get-login-password
+        --region $AWS_DEFAULT_REGION 
+        | docker login
+          --username AWS
+          --password-stdin $ECR_REPOSITORY_DOMAIN
+
+    commands:
+      - echo Construindo Solução
+      - dotnet build
+        --no-restore
+        --configuration $CONFIGURATION
+      
+      - echo Executando Testes
+      - dotnet test
+        --collect:"XPlat Code Coverage"
+        --results-directory ./TestResults
+        --logger "trx"
+
+      - echo Gerando Relatório de Testes
+      - reportgenerator
+        -reports:./TestResults/*/coverage.cobertura.xml
+        -targetdir:CoverageReport
+        -reporttypes:Html
+
+      - echo Construindo imagem Docker
+      - docker build
+        --tag $ECR_REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER
+        --file src/FCG.Games.Api/Dockerfile
+        .
+
+  post_build:
+    commands:
+      - echo Enviando imagem para o ECR
+      - docker push $ECR_REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER
+
+artifacts:
+  files:
+    - TestResults/**/*
+    - CoverageReport/**/*
