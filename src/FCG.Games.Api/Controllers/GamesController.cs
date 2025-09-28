@@ -46,7 +46,7 @@ public class GamesController(IMediator mediator) : ControllerBase
         CancellationToken ct
     )
     {
-        var input = new GetGameEvaluationsInput(catalogKey, gameKey);
+        var input = GamesRequestToUseCaseMapping.ToUseCase(catalogKey, gameKey);
 
         var output = await mediator.Send(input, ct);
 
@@ -62,7 +62,7 @@ public class GamesController(IMediator mediator) : ControllerBase
         CancellationToken ct
     )
     {
-        var input = new GetGameDownloadInput(catalogKey, gameKey);
+        var input = GamesRequestToUseCaseMapping.ToDownloadUseCase(catalogKey, gameKey);
 
         var output = await mediator.Send(input, ct);
 
@@ -79,7 +79,7 @@ public class GamesController(IMediator mediator) : ControllerBase
         CancellationToken ct
     )
     {
-        var input = new UpdateGameInput(catalogKey, gameKey, request.Title, request.Description);
+        var input = request.ToUseCase(catalogKey, gameKey);
 
         var output = await mediator.Send(input, ct);
 

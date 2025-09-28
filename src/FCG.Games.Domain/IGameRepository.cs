@@ -11,4 +11,10 @@ public interface IGameRepository
     );
 
     Task IndexAsync(Game game, CancellationToken ct);
+    
+    Task<IEnumerable<EvaluationDto>> GetEvaluationsByGameKeyAsync(Guid gameKey, CancellationToken ct);
+    
+    Task<DownloadDto?> GetDownloadByGameKeyAsync(Guid gameKey, CancellationToken ct);
+    
+    Task UpdateAsync(Game game, CancellationToken ct);
 }
