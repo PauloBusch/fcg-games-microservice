@@ -8,6 +8,7 @@ env:
 phases:
   install:
     commands:
+      - echo Atualizando pacotes
       - apt-get update
 
       - echo Instalando Docker
@@ -15,10 +16,15 @@ phases:
       
       - echo Instalando AWS CLI
       - apt-get install -y awscli
+      - export AWS_SESSION_TOKEN=
+      - export AWS_DEFAULT_REGION=$AWS_REGION
 
       - echo Instalando ReportGenerator
       - dotnet tool install --global dotnet-reportgenerator-globaltool
       - export PATH="$PATH:/root/.dotnet/tools"
+
+      - echo Configurando Variáveis
+      - export IMAGE_TAG=$CODEBUILD_BUILD_NUMBER
 
   pre_build:
     commands:
@@ -27,11 +33,12 @@ phases:
 
       - echo Autenticando no ECR
       - aws ecr get-login-password
-        --region $AWS_DEFAULT_REGION 
+        --region $AWS_REGION
         | docker login
           --username AWS
           --password-stdin $ECR_REPOSITORY_DOMAIN
 
+  build:
     commands:
       - echo Construindo Solução
       - dotnet build
@@ -52,14 +59,14 @@ phases:
 
       - echo Construindo imagem Docker
       - docker build
-        --tag $ECR_REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER
+        --tag $ECR_REPOSITORY_URI:$IMAGE_TAG
         --file src/FCG.Games.Api/Dockerfile
         .
-
+  
   post_build:
     commands:
       - echo Enviando imagem para o ECR
-      - docker push $ECR_REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER
+      - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
 
 artifacts:
   files:
