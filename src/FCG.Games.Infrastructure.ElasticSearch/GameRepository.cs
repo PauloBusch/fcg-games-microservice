@@ -33,4 +33,46 @@ public class GameRepository(IOpenSearchClient elasticClient) : IGameRepository
     {
         await elasticClient.IndexDocumentAsync(game, ct);
     }
+
+    public async Task<IEnumerable<EvaluationDto>> GetEvaluationsByGameKeyAsync(Guid gameKey, CancellationToken ct)
+    {
+        // Get the game first to access its evaluations
+        var game = await GetByKeyAsync(gameKey, ct);
+        
+        if (game is null)
+            return Enumerable.Empty<EvaluationDto>();
+
+        return game.Evaluations.Select(e => new EvaluationDto(
+            e.Key,
+            (int)e.Stars,  // Convert uint to int for rating
+            e.Comment ?? string.Empty,
+            DateTime.UtcNow, // Using current time since Evaluation doesn't have CreatedAt
+            e.User.Name
+        ));
+    }
+
+    public async Task<DownloadDto?> GetDownloadByGameKeyAsync(Guid gameKey, CancellationToken ct)
+    {
+        // Get the game first to access its downloads
+        var game = await GetByKeyAsync(gameKey, ct);
+        
+        if (game is null || !game.Downloads.Any())
+            return null;
+
+        var download = game.Downloads.First();
+        
+        return new DownloadDto(
+            download.Key, 
+            "https://example.com/download", // Placeholder URL since Download entity doesn't have this property
+            0, // Placeholder file size
+            "1.0", // Placeholder version
+            download.Date
+        );
+    }
+
+    public async Task UpdateAsync(Game game, CancellationToken ct)
+    {
+        await elasticClient.UpdateAsync<Game>(game.Key, u => u
+            .Doc(game), ct);
+    }
 }
