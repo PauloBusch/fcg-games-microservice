@@ -38,4 +38,53 @@ public class GamesController(IMediator mediator) : ControllerBase
             response
         );
     }
+
+    [HttpGet("catalogs/{catalogKey:guid}/games/{gameKey:guid}/evaluations")]
+    public async Task<ActionResult<GetGameEvaluationsResponse>> GetGameEvaluationsAsync(
+        [FromRoute] Guid catalogKey,
+        [FromRoute] Guid gameKey,
+        CancellationToken ct
+    )
+    {
+        var input = new GetGameEvaluationsInput(catalogKey, gameKey);
+
+        var output = await mediator.Send(input, ct);
+
+        var response = output.ToResponse();
+
+        return Ok(response);
+    }
+
+    [HttpGet("catalogs/{catalogKey:guid}/games/{gameKey:guid}/download")]
+    public async Task<ActionResult<GetGameDownloadResponse>> GetGameDownloadAsync(
+        [FromRoute] Guid catalogKey,
+        [FromRoute] Guid gameKey,
+        CancellationToken ct
+    )
+    {
+        var input = new GetGameDownloadInput(catalogKey, gameKey);
+
+        var output = await mediator.Send(input, ct);
+
+        var response = output.ToResponse();
+
+        return Ok(response);
+    }
+
+    [HttpPut("catalogs/{catalogKey:guid}/games/{gameKey:guid}")]
+    public async Task<ActionResult<UpdateGameResponse>> UpdateGameAsync(
+        [FromRoute] Guid catalogKey,
+        [FromRoute] Guid gameKey,
+        [FromBody] UpdateGameRequest request,
+        CancellationToken ct
+    )
+    {
+        var input = new UpdateGameInput(catalogKey, gameKey, request.Title, request.Description);
+
+        var output = await mediator.Send(input, ct);
+
+        var response = output.ToResponse();
+
+        return Ok(response);
+    }
 }
