@@ -6,6 +6,8 @@ env:
     BUILD_CONFIGURATION: "Release"
 
 phases:
+
+  # TODO: Create a custum image for build
   install:
     commands:
       - echo Atualizando pacotes
