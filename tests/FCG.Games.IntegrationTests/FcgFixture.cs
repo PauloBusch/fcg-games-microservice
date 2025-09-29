@@ -27,7 +27,13 @@ public class FcgFixture : IDisposable
                     .UseEnvironment(Environment)
                     .ConfigureAppConfiguration((_, config) =>
                     {
-                        config.AddJsonFile($"appsettings.{Environment}.json", optional: false, reloadOnChange: true);
+                        config
+                            .AddJsonFile(
+                                $"appsettings.{Environment}.json",
+                                optional: false,
+                                reloadOnChange: true
+                            )
+                            .AddEnvironmentVariables();
                     });
             });
 

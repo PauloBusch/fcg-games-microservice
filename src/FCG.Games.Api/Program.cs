@@ -13,12 +13,15 @@ using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var services = builder.Services;
+builder.Configuration
+    .AddEnvironmentVariables();
 
 var appSettings = builder.Configuration
     .Get<AppSettings>();
 
 ArgumentNullException.ThrowIfNull(appSettings);
+
+var services = builder.Services;
 
 services
     .AddControllers();
