@@ -15,10 +15,6 @@ phases:
       - ./dotnet-install.sh 
         --version 9.0.302
         --install-dir /root/dotnet
-      - ./dotnet-install.sh 
-        --runtime dotnet
-        --version 9.0.0
-        --install-dir /root/dotnet
       - export PATH=/root/dotnet:$PATH
       - export PATH="$PATH:/root/.dotnet/tools"
 
@@ -27,8 +23,9 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - echo Docker inicializado
 
-      - echo Instalando ReportGenerator
-      - dotnet tool install --global dotnet-reportgenerator-globaltool
+      # TODO: Configure ReportGenerator to work properly
+      # - echo Instalando ReportGenerator
+      # - dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - echo Configurando Variáveis
       - export IMAGE_TAG=$CODEBUILD_BUILD_NUMBER
@@ -58,11 +55,12 @@ phases:
         --results-directory ./TestResults
         --logger "trx"
 
-      - echo Gerando Relatório de Testes
-      - reportgenerator
-        -reports:./TestResults/*/coverage.cobertura.xml
-        -targetdir:CoverageReport
-        -reporttypes:Html
+      # TODO: Configure ReportGenerator to work properly
+      # - echo Gerando Relatório de Testes
+      # - reportgenerator
+      #   -reports:./TestResults/*/coverage.cobertura.xml
+      #   -targetdir:CoverageReport
+      #   -reporttypes:Html
 
       - echo Construindo imagem Docker
       - docker build
