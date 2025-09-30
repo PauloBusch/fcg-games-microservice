@@ -2,26 +2,24 @@ version: 0.2
 
 env:
   variables:
-    DOTNET_VERSION: "9.0"
     BUILD_CONFIGURATION: "Release"
 
 phases:
   # TODO: Create a custom image for build
   install:
     commands:
-      - echo Atualizando pacotes
-      - apt-get update
+      - echo Instalando .NET 9.0 SDK
+      - rm -f /codebuild/global.json || true
+      - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+      - chmod +x dotnet-install.sh
+      - ./dotnet-install.sh --version 9.0.302 --install-dir /root/dotnet
+      - export PATH=/root/dotnet:$PATH
+      - export PATH="$PATH:/root/.dotnet/tools"
 
       - echo Instalando Docker
-      - apt-get install -y docker.io
       - nohup /usr/local/bin/dockerd-entrypoint.sh &
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - echo Docker inicializado
-      
-      - echo Instalando AWS CLI
-      - apt-get install -y awscli
-      - export AWS_SESSION_TOKEN=
-      - export AWS_DEFAULT_REGION=$AWS_REGION
 
       - echo Instalando ReportGenerator
       - dotnet tool install --global dotnet-reportgenerator-globaltool
