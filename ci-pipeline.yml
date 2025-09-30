@@ -12,7 +12,13 @@ phases:
       - rm -f /codebuild/global.json || true
       - curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --version 9.0.302 --install-dir /root/dotnet
+      - ./dotnet-install.sh 
+        --version 9.0.302
+        --install-dir /root/dotnet
+      - ./dotnet-install.sh 
+        --runtime dotnet
+        --version 9.0.0
+        --install-dir /root/dotnet
       - export PATH=/root/dotnet:$PATH
       - export PATH="$PATH:/root/.dotnet/tools"
 
@@ -23,7 +29,6 @@ phases:
 
       - echo Instalando ReportGenerator
       - dotnet tool install --global dotnet-reportgenerator-globaltool
-      - export PATH="$PATH:/root/.dotnet/tools"
 
       - echo Configurando Variáveis
       - export IMAGE_TAG=$CODEBUILD_BUILD_NUMBER
