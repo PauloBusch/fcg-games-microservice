@@ -68,11 +68,13 @@ phases:
         --file src/FCG.Games.Api/Dockerfile
         --build-arg BUILD_CONFIGURATION=$BUILD_CONFIGURATION
         .
-  
+      - docker tag $ECR_REPOSITORY_URI:$IMAGE_TAG $ECR_REPOSITORY_URI:latest
+
   post_build:
     commands:
       - echo Enviando imagem para o ECR
       - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
+      - docker push $ECR_REPOSITORY_URI:latest
 
 artifacts:
   files:
