@@ -17,4 +17,10 @@ public interface IGameRepository
     Task<DownloadDto?> GetDownloadByGameKeyAsync(Guid gameKey, CancellationToken ct);
     
     Task UpdateAsync(Game game, CancellationToken ct);
+
+    Task<IEnumerable<Game>> GetByTitleAsync(Guid catalogKey, string title, CancellationToken cancellationToken);
+
+    Task<bool> DeleteAsync(Guid catalogKey, Guid gameKey, CancellationToken ct);
+
+
 }

@@ -15,4 +15,27 @@ public record GetGameOutput(
             new CatalogDto(game.Catalog)
         )
     { }
+
+    public bool IsNotFound { get; set; }
+
+    internal static GetGameOutput FromDomain(Game game)
+    {
+        return new GetGameOutput(game)
+        {
+            IsNotFound = false
+        };
+    }
+
+    internal static GetGameOutput NotFound()
+    {
+        return new GetGameOutput(
+            Guid.Empty,
+            string.Empty,
+            string.Empty,
+            new CatalogDto(Guid.Empty, string.Empty)
+        )
+        {
+            IsNotFound = true
+        };
+    }
 };

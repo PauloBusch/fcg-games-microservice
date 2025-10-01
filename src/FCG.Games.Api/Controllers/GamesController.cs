@@ -20,6 +20,36 @@ public class GamesController(IMediator mediator) : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// Search game by title within a specific catalog by ID
+    /// </summary>
+    /// <param name="catalogKey"></param>
+    /// <param name="title"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpGet("/catalogs/{catalogKey}/games")]
+    [ActionName(nameof(GetGameByTitleAsync))]
+    public async Task<ActionResult<GetGameResponse>> GetGameByTitleAsync(
+        [FromRoute] Guid catalogKey,
+        [FromQuery] string title,
+        CancellationToken ct
+    )
+    {
+        if (string.IsNullOrWhiteSpace(title))
+            return BadRequest("Title is required.");
+
+        var input = GamesRequestToUseCaseMapping.ToUseCase(catalogKey, title);
+
+        var output = await mediator.Send(input, ct);
+
+        if (output.IsNotFound)
+            return NotFound();
+
+        var response = GetGameResponse.FromOutput(output);
+
+        return Ok(response);
+    }
+
     [HttpPost]
     public async Task<ActionResult<CreateGameResponse>> CreateGameAsync(
         [FromBody] CreateGameRequest request,
@@ -37,6 +67,41 @@ public class GamesController(IMediator mediator) : ControllerBase
             new { key = response.Key },
             response
         );
+    }
+
+    /// <summary>
+    /// Post a evaluation for a game in a specific catalog
+    /// </summary>
+    /// <param name="catalogKey"></param>
+    /// <param name="gameKey"></param>
+    /// <param name="request"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpPost("/catalogs/{catalogKey}/games/{gameKey}/evaluations")]
+    [ActionName(nameof(CreateEvaluationAsync))]
+    public async Task<ActionResult<CreateEvaluationResponse>> CreateEvaluationAsync(
+    [FromRoute] Guid catalogKey,
+    [FromRoute] Guid gameKey,
+    [FromBody] CreateEvaluationRequest request,
+    CancellationToken ct)
+    {
+        if (request is null)
+            return BadRequest("Request body is required.");
+
+        var input = GamesRequestToUseCaseMapping.ToUseCase(catalogKey, gameKey, request);
+
+        var output = await mediator.Send(input, ct);
+
+        if (output.IsNotCreated)
+            return UnprocessableEntity("Evaluation could not be created.");
+
+        var response = new CreateEvaluationResponse
+        {
+            EvaluationId = output.EvaluationId,
+            CreatedAt = output.CreatedAt
+        };
+
+        return CreatedAtAction(nameof(CreateEvaluationAsync), new { catalogKey, gameKey }, response);
     }
 
     /// <summary>
@@ -109,4 +174,29 @@ public class GamesController(IMediator mediator) : ControllerBase
 
         return Ok(response);
     }
+
+    /// <summary>
+    /// Delete game by game ID within a specific catalog by ID
+    /// </summary>
+    /// <param name="catalogKey"></param>
+    /// <param name="gameKey"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpDelete("/catalogs/{catalogKey}/games/{gameKey}")]
+    [ActionName(nameof(DeleteGameAsync))]
+    public async Task<IActionResult> DeleteGameAsync(
+    [FromRoute] Guid catalogKey,
+    [FromRoute] Guid gameKey,
+    CancellationToken ct)
+    {
+        var input = GamesRequestToUseCaseMapping.ToDeleteGameUseCase(catalogKey, gameKey);
+
+        var output = await mediator.Send(input, ct);
+
+        if (!output.Success)
+            return NotFound();
+
+        return NoContent();
+    }
+
 }

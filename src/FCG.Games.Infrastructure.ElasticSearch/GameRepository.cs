@@ -75,4 +75,25 @@ public class GameRepository(IOpenSearchClient elasticClient) : IGameRepository
         await elasticClient.UpdateAsync<Game>(game.Key, u => u
             .Doc(game), ct);
     }
+
+    public async Task<IEnumerable<Game>> GetByTitleAsync(Guid catalogKey, string title, CancellationToken cancellationToken)
+    {
+        var response = await elasticClient.SearchAsync<Game>(s => s
+            .Index(catalogKey.ToString().ToLowerInvariant())
+            .Query(q => q
+                .Match(m => m
+                    .Field(f => f.Title)
+                    .Query(title)
+                )
+            ), cancellationToken);
+
+        return response.Documents;
+    }
+
+    public async Task<bool> DeleteAsync(Guid catalogKey, Guid gameKey, CancellationToken ct)
+    {
+        var response = await elasticClient.DeleteAsync<Game>(gameKey, d => d.Index(catalogKey.ToString().ToLowerInvariant()), ct);
+        return response.IsValid && response.Result == Result.Deleted;
+    }
+
 }
