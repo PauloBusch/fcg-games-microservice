@@ -6,10 +6,6 @@ public class GetGameEvaluationsInputValidator : AbstractValidator<GetGameEvaluat
 {
     public GetGameEvaluationsInputValidator()
     {
-        RuleFor(x => x.CatalogKey)
-            .NotEmpty()
-            .WithMessage("CatalogKey is required.");
-
         RuleFor(x => x.GameKey)
             .NotEmpty()
             .WithMessage("GameKey is required.");

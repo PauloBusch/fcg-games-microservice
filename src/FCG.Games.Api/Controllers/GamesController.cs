@@ -42,18 +42,16 @@ public class GamesController(IMediator mediator) : ControllerBase
     /// <summary>
     /// This endpoint retrieves the evaluations for a specific game within a specific catalog.
     /// </summary>
-    /// <param name="catalogKey"></param>
-    /// <param name="gameKey"></param>
+    /// <param name="key"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpGet("catalogs/{catalogKey:guid}/games/{gameKey:guid}/evaluations")]
+    [HttpGet("{key:guid}/evaluations")]
     public async Task<ActionResult<GetGameEvaluationsResponse>> GetGameEvaluationsAsync(
-        [FromRoute] Guid catalogKey,
-        [FromRoute] Guid gameKey,
+        [FromRoute] Guid key,
         CancellationToken ct
     )
     {
-        var input = GamesRequestToUseCaseMapping.ToUseCase(catalogKey, gameKey);
+        var input = GamesRequestToUseCaseMapping.ToUseCase(key);
 
         var output = await mediator.Send(input, ct);
 
@@ -65,18 +63,16 @@ public class GamesController(IMediator mediator) : ControllerBase
     /// <summary>
     /// This endoint retrieves the download information for a specific game within a specific catalog.
     /// </summary>
-    /// <param name="catalogKey"></param>
-    /// <param name="gameKey"></param>
+    /// <param name="key"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpGet("catalogs/{catalogKey:guid}/games/{gameKey:guid}/download")]
+    [HttpGet("{key:guid}/download")]
     public async Task<ActionResult<GetGameDownloadResponse>> GetGameDownloadAsync(
-        [FromRoute] Guid catalogKey,
-        [FromRoute] Guid gameKey,
+        [FromRoute] Guid key,
         CancellationToken ct
     )
     {
-        var input = GamesRequestToUseCaseMapping.ToDownloadUseCase(catalogKey, gameKey);
+        var input = GamesRequestToUseCaseMapping.ToDownloadUseCase(key);
 
         var output = await mediator.Send(input, ct);
 
@@ -88,20 +84,19 @@ public class GamesController(IMediator mediator) : ControllerBase
     /// <summary>
     /// This endpoint updates the details of a specific game.
     /// </summary>
-    /// <param name="catalogKey"></param>
-    /// <param name="gameKey"></param>
+    /// <param name="key"></param>
     /// <param name="request"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    [HttpPut("catalogs/{catalogKey:guid}/games/{gameKey:guid}")]
+    [HttpPut("{key:guid}")]
     public async Task<ActionResult<UpdateGameResponse>> UpdateGameAsync(
-        [FromRoute] Guid catalogKey,
-        [FromRoute] Guid gameKey,
+        [FromRoute] Guid key,
         [FromBody] UpdateGameRequest request,
         CancellationToken ct
+        
     )
     {
-        var input = request.ToUseCase(catalogKey, gameKey);
+        var input = request.ToUseCase(key);
 
         var output = await mediator.Send(input, ct);
 
