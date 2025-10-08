@@ -3,5 +3,5 @@
 [Mapper]
 public static partial class GamesRequestToUseCaseMapping
 {
-    public static partial CreateGameInput ToUseCase(this CreateGameRequest request);
+    public static partial CatalogDto ToUseCase(this CatalogModel source);
 }
