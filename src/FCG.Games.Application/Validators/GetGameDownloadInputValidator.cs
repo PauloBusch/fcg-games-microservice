@@ -7,7 +7,6 @@ public class GetGameDownloadInputValidator : AbstractValidator<GetGameDownloadIn
     public GetGameDownloadInputValidator()
     {
         RuleFor(x => x.GameKey)
-            .NotEmpty()
-            .WithMessage("GameKey is required.");
+            .NotEmpty();
     }
 }

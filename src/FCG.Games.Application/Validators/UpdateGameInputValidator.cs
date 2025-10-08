@@ -7,8 +7,7 @@ public class UpdateGameInputValidator : AbstractValidator<UpdateGameInput>
     public UpdateGameInputValidator()
     {
         RuleFor(x => x.GameKey)
-            .NotEmpty()
-            .WithMessage("GameKey is required.");
+            .NotEmpty();
 
         RuleFor(x => x.Title)
             .NotEmpty()
