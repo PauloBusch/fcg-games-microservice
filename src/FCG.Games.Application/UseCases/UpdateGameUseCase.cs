@@ -12,7 +12,6 @@ public class UpdateGameUseCase(IGameRepository gameRepository) : IUseCase<Update
 
         if (duplicatedGame && game.Title != input.Title) throw new FcgDuplicateException(nameof(Game), $"The title '{input.Title}' is already in use.");
 
-        // Create a new Game instance with updated values
         var updatedGame = new Game(
             input.GameKey,
             input.Title,

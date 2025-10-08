@@ -38,13 +38,7 @@ public class GamesController(IMediator mediator) : ControllerBase
             response
         );
     }
-
-    /// <summary>
-    /// This endpoint retrieves the evaluations for a specific game within a specific catalog.
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    
     [HttpGet("{key:guid}/evaluations")]
     public async Task<ActionResult<GetGameEvaluationsResponse>> GetGameEvaluationsAsync(
         [FromRoute] Guid key,
@@ -59,13 +53,7 @@ public class GamesController(IMediator mediator) : ControllerBase
 
         return Ok(response);
     }
-
-    /// <summary>
-    /// This endoint retrieves the download information for a specific game within a specific catalog.
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    
     [HttpGet("{key:guid}/download")]
     public async Task<ActionResult<GetGameDownloadResponse>> GetGameDownloadAsync(
         [FromRoute] Guid key,
@@ -80,14 +68,7 @@ public class GamesController(IMediator mediator) : ControllerBase
 
         return Ok(response);
     }
-
-    /// <summary>
-    /// This endpoint updates the details of a specific game.
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="request"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
+    
     [HttpPut("{key:guid}")]
     public async Task<ActionResult<UpdateGameResponse>> UpdateGameAsync(
         [FromRoute] Guid key,
