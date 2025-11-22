@@ -81,9 +81,9 @@ phases:
       - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
       
       - echo Atualizando kubeconfig do EKS
-      - aws eks update-kubeconfig \
-          --name $EKS_CLUSTER_NAME \
-          --region $AWS_REGION
+      - aws eks update-kubeconfig
+        --name $EKS_CLUSTER_NAME
+        --region $AWS_REGION
 
       - echo Substituindo imagem no Deployment
       - sed -i "s|IMAGE_PLACEHOLDER|$ECR_REPOSITORY_URI:$IMAGE_TAG|g" k8s/deployment.yaml
