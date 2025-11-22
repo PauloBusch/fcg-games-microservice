@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fcg-games
+  namespace: fcg-games
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fcg-games
+  template:
+    metadata:
+      labels:
+        app: fcg-games
+    spec:
+      containers:
+        - name: fcg-games
+          image: IMAGE_PLACEHOLDER
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ElasticSearchSettings__Endpoint
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-games-config
+                  key: OPENSEARCH_ENDPOINT
+
+            - name: ElasticSearchSettings__Region
+              valueFrom:
+                configMapKeyRef:
+                  name: fcg-games-config
+                  key: AWS_REGION
+
+            - name: ElasticSearchSettings__AccessKey
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-games-secret
+                  key: OPENSEARCH_ACCESS_KEY
+
+            - name: ElasticSearchSettings__Secret
+              valueFrom:
+                secretKeyRef:
+                  name: fcg-games-secret
+                  key: OPENSEARCH_SECRET
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+            initialDelaySeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+            initialDelaySeconds: 10

@@ -23,6 +23,11 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - echo Docker inicializado
 
+      - echo Instalando kubectl
+      - curl -LO "https://amazon-eks.s3.amazonaws.com/1.30.0/2024-06-20/bin/linux/amd64/kubectl"
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
+
       # TODO: Configure ReportGenerator to work properly
       # - echo Instalando ReportGenerator
       # - dotnet tool install --global dotnet-reportgenerator-globaltool
@@ -74,10 +79,23 @@ phases:
     commands:
       - echo Enviando imagem para o ECR
       - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
-      - echo '[{"name":"'$EKS_CONTAINER_NAME'","imageUri":"'$ECR_REPOSITORY_URI':'$IMAGE_TAG'"}]' > image-definitions.json
+      
+      - echo Atualizando kubeconfig do EKS
+      - aws eks update-kubeconfig \
+          --name $EKS_CLUSTER_NAME \
+          --region $AWS_REGION
+
+      - echo Substituindo imagem no Deployment
+      - sed -i "s|IMAGE_PLACEHOLDER|$ECR_REPOSITORY_URI:$IMAGE_TAG|g" k8s/deployment.yaml
+      - sed -i "s|AWS_REGION|$AWS_REGION|g" k8s/configmap.yaml
+      - sed -i "s|OPENSEARCH_ENDPOINT|$OPENSEARCH_ENDPOINT|g" k8s/configmap.yaml
+      - sed -i "s|OPENSEARCH_ACCESS_KEY|$OPENSEARCH_ACCESS_KEY|g" k8s/secret.yaml
+      - sed -i "s|OPENSEARCH_SECRET_KEY|$OPENSEARCH_SECRET_KEY|g" k8s/secret.yaml
+
+      - echo Aplicando manifests no Kubernetes
+      - kubectl apply -f k8s/
 
 artifacts:
   files:
-    - image-definitions.json
     - TestResults/**/*
     - CoverageReport/**/*
