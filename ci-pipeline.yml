@@ -74,7 +74,7 @@ phases:
     commands:
       - echo Enviando imagem para o ECR
       - docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
-      - echo '[{"name":"'$ECS_CONTAINER_NAME'","imageUri":"'$ECR_REPOSITORY_URI':'$IMAGE_TAG'"}]' > image-definitions.json
+      - echo '[{"name":"'$EKS_CONTAINER_NAME'","imageUri":"'$ECR_REPOSITORY_URI':'$IMAGE_TAG'"}]' > image-definitions.json
 
 artifacts:
   files:
