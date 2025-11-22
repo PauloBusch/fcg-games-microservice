@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: fcg-games-config
 data:
-  OPENSEARCH_ENDPOINT: "${OPENSEARCH_ENDPOINT}"
   AWS_REGION: "${AWS_REGION}"
+  OPENSEARCH_ENDPOINT: "${OPENSEARCH_ENDPOINT}"

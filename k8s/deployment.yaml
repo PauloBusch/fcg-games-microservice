@@ -34,14 +34,14 @@ spec:
             - name: ElasticSearchSettings__AccessKey
               valueFrom:
                 secretKeyRef:
-                  name: fcg-games-secret
-                  key: OPENSEARCH_ACCESS_KEY
+                  name: fcg-games-elasticsearch
+                  key: AccessKey
 
             - name: ElasticSearchSettings__Secret
               valueFrom:
                 secretKeyRef:
-                  name: fcg-games-secret
-                  key: OPENSEARCH_SECRET
+                  name: fcg-games-elasticsearch
+                  key: Secret
 
           livenessProbe:
             httpGet:
