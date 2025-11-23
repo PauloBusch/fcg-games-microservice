@@ -24,9 +24,11 @@ phases:
       - echo Docker inicializado
 
       - echo Instalando kubectl
-      - curl -LO "https://amazon-eks.s3.amazonaws.com/1.30.0/2024-06-20/bin/linux/amd64/kubectl"
+      - curl -o kubectl https://amazon-eks.s3.amazonaws.com/1.30.0/2024-06-20/bin/linux/amd64/kubectl
       - chmod +x kubectl
       - mv kubectl /usr/local/bin/
+      - ls -l /usr/local/bin/kubectl
+      - file /usr/local/bin/kubectl
 
       # TODO: Configure ReportGenerator to work properly
       # - echo Instalando ReportGenerator
