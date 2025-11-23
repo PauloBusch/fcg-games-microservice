@@ -22,26 +22,26 @@ spec:
             - name: ElasticSearchSettings__Endpoint
               valueFrom:
                 configMapKeyRef:
-                  name: fcg-games-config
-                  key: OPENSEARCH_ENDPOINT
+                  name: fcg-games-configs
+                  key: ElasticSearchEndpoint
 
             - name: ElasticSearchSettings__Region
               valueFrom:
                 configMapKeyRef:
-                  name: fcg-games-config
-                  key: AWS_REGION
+                  name: fcg-games-configs
+                  key: ElasticSearchRegion
 
             - name: ElasticSearchSettings__AccessKey
               valueFrom:
                 secretKeyRef:
-                  name: fcg-games-elasticsearch
-                  key: AccessKey
+                  name: fcg-games-secrets
+                  key: ElasticSearchAccessKey
 
             - name: ElasticSearchSettings__Secret
               valueFrom:
                 secretKeyRef:
-                  name: fcg-games-elasticsearch
-                  key: Secret
+                  name: fcg-games-secrets
+                  key: ElasticSearchSecret
 
           livenessProbe:
             httpGet:

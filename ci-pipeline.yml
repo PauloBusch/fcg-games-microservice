@@ -85,13 +85,9 @@ phases:
         --name $EKS_CLUSTER_NAME
         --region $AWS_REGION
 
-      - echo Substituindo variáveis nos manifests do Kubernetes
+      - echo Substituindo imagem no Deployment
       - sed -i "s|\${IMAGE}|$ECR_REPOSITORY_URI:$IMAGE_TAG|g" k8s/deployment.yaml
-      - sed -i "s|\${AWS_REGION}|$AWS_REGION|g" k8s/configmap.yaml
-      - sed -i "s|\${OPENSEARCH_ENDPOINT}|$OPENSEARCH_ENDPOINT|g" k8s/configmap.yaml
-      - sed -i "s|\${OPENSEARCH_ACCESS_KEY}|$OPENSEARCH_ACCESS_KEY|g" k8s/secret.yaml
-      - sed -i "s|\${OPENSEARCH_SECRET}|$OPENSEARCH_SECRET|g" k8s/secret.yaml
-
+      
       - echo Aplicando manifests no Kubernetes
       - kubectl apply -f k8s/
 
