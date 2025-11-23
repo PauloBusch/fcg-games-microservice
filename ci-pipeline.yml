@@ -24,7 +24,7 @@ phases:
       - echo Docker inicializado
 
       - echo Instalando kubectl
-      - curl -o kubectl https://amazon-eks.s3.amazonaws.com/1.30.0/2024-06-20/bin/linux/amd64/kubectl
+      - curl -LO https://dl.k8s.io/release/v1.30.0/bin/linux/amd64/kubectl
       - chmod +x kubectl
       - mv kubectl /usr/local/bin/
       - ls -l /usr/local/bin/kubectl
