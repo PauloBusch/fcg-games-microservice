@@ -44,7 +44,7 @@ spec:
                   key: ElasticSearchSecret
 
             - name: ASPNETCORE_HTTP_PORTS
-              value: ${CONTAINER_PORT}
+              value: "${CONTAINER_PORT}"
 
           livenessProbe:
             httpGet:
