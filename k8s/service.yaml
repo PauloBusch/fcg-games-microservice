@@ -8,6 +8,6 @@ spec:
     app: fcg-games
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8080
+      port: ${SERVICE_PORT}
+      targetPort: ${CONTAINER_PORT}
   type: ClusterIP

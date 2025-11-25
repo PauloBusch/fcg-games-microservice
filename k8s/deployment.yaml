@@ -17,7 +17,7 @@ spec:
         - name: fcg-games
           image: ${IMAGE}
           ports:
-            - containerPort: 8080
+            - containerPort: ${CONTAINER_PORT}
           env:
             - name: ElasticSearchSettings__Endpoint
               valueFrom:
@@ -43,10 +43,13 @@ spec:
                   name: fcg-games-secrets
                   key: ElasticSearchSecret
 
+            - name: ASPNETCORE_HTTP_PORTS
+              value: ${CONTAINER_PORT}
+
           livenessProbe:
             httpGet:
               path: /health
-              port: 8080
+              port: ${CONTAINER_PORT}
             periodSeconds: 30
             timeoutSeconds: 5
             failureThreshold: 3
@@ -55,7 +58,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /health
-              port: 8080
+              port: ${CONTAINER_PORT}
             periodSeconds: 30
             timeoutSeconds: 5
             failureThreshold: 3
