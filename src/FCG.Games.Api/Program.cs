@@ -33,7 +33,17 @@ services
     .AddValidatorsFromAssemblyContaining<CreateGameInputValidator>()
     .AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidatorPipeline<,>));
 
-var elasticSearchSettings = appSettings.ElasticSearchSettings;
+// Ler ElasticSearchSettings usando GetSection para suportar variáveis de ambiente
+var elasticSearchSection = builder.Configuration.GetSection("ElasticSearchSettings");
+var elasticSearchSettings = new ElasticSearchSettings
+{
+    Endpoint = elasticSearchSection["Endpoint"] ?? throw new ArgumentNullException("ElasticSearchSettings:Endpoint"),
+    IndexName = elasticSearchSection["IndexName"] ?? throw new ArgumentNullException("ElasticSearchSettings:IndexName"),
+    AccessKey = elasticSearchSection["AccessKey"],
+    Secret = elasticSearchSection["Secret"],
+    Region = elasticSearchSection["Region"],
+    UseLocalMode = elasticSearchSection.GetValue<bool>("UseLocalMode")
+};
 
 services
     .AddElasticSearchModule(elasticSearchSettings);

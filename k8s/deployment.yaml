@@ -16,8 +16,18 @@ spec:
       containers:
         - name: fcg-games
           image: ${IMAGE}
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: ${CONTAINER_PORT}
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
           env:
             - name: ElasticSearchSettings__Endpoint
               valueFrom:

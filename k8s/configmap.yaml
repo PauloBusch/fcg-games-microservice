@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fcg-games-configs
+  namespace: fcg-games
+data:
+  ElasticSearchEndpoint: "https://your-opensearch-endpoint.us-east-2.es.amazonaws.com"
+  ElasticSearchRegion: "us-east-2"
+  ElasticSearchIndexName: "games"
+
