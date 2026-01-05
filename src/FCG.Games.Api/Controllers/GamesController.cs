@@ -1,11 +1,13 @@
 ﻿namespace FCG.Games.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class GamesController(IMediator mediator) : ControllerBase
 {
     [HttpGet("{key:guid}")]
     [ActionName(nameof(GetGameByIdAsync))]
+    [Authorize(Roles = Roles.User)]
     public async Task<ActionResult<GetGameResponse>> GetGameByIdAsync(
         [FromRoute] Guid key,
         CancellationToken ct
@@ -21,6 +23,7 @@ public class GamesController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = Policies.OnlyAdmin)]
     public async Task<ActionResult<CreateGameResponse>> CreateGameAsync(
         [FromBody] CreateGameRequest request,
         CancellationToken ct
@@ -75,6 +78,7 @@ public class GamesController(IMediator mediator) : ControllerBase
     }
     
     [HttpPut("{key:guid}")]
+    [Authorize(Policy = Policies.OnlyAdmin)]
     public async Task<ActionResult<UpdateGameResponse>> UpdateGameAsync(
         [FromRoute] Guid key,
         [FromBody] UpdateGameRequest request,

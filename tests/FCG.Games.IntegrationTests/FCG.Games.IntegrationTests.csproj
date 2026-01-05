@@ -41,6 +41,7 @@
     <Using Include="FCG.Games.Domain" />
     <Using Include="FCG.Games.Domain._Common.Exceptions" />
     <Using Include="FCG.Games.Api.Contracts" />
+    <Using Include="FCG.Games.Api._Common.Contracts" />
   </ItemGroup>
 
 </Project>

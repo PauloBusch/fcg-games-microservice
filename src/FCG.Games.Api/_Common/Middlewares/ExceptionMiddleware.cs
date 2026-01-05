@@ -1,4 +1,5 @@
-﻿using FCG.Games.Domain._Common.Exceptions;
+﻿using FCG.Games.Api._Common.Contracts;
+using FCG.Games.Domain._Common.Exceptions;
 using System.Net;
 
 namespace FCG.Games.Api._Common.Middlewares;

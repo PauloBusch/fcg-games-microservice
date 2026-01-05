@@ -15,6 +15,7 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageReference Include="MediatR" Version="13.0.0" />
     <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.9" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
@@ -31,11 +32,13 @@
 
   <ItemGroup>
 	<Using Include="FCG.Games.Api.Contracts" />
+    <Using Include="FCG.Games.Api._Common.Constants" />
 	<Using Include="FCG.Games.Api.Mappings" />
 	<Using Include="FCG.Games.Application.Contracts" />
 	<Using Include="MediatR" />
 	<Using Include="Riok.Mapperly.Abstractions" />
 	<Using Include="Microsoft.AspNetCore.Mvc" />
+	<Using Include="Microsoft.AspNetCore.Authorization" />
   </ItemGroup>
 
 </Project>

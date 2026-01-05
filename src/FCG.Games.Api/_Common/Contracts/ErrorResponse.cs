@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.Json.Serialization;
 
-namespace FCG.Games.Api._Common;
+namespace FCG.Games.Api._Common.Contracts;
 
 public class ErrorResponse
 {

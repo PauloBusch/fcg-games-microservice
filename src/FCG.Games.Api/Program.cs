@@ -1,8 +1,8 @@
-using FCG.Games.Api._Common;
 using FCG.Games.Api._Common.Extensions;
 using FCG.Games.Api._Common.HealthChecks;
 using FCG.Games.Api._Common.Middlewares;
 using FCG.Games.Api._Common.Pipelines;
+using FCG.Games.Api._Common.Settings;
 using FCG.Games.Application.UseCases;
 using FCG.Games.Application.Validators;
 using FCG.Games.Infrastructure.ElasticSearch;
@@ -33,6 +33,10 @@ services
     .AddValidatorsFromAssemblyContaining<CreateGameInputValidator>()
     .AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidatorPipeline<,>));
 
+services
+    .ConfigureAuthentication(appSettings.AuthenticationSettings)
+    .ConfigureAuthorization();
+
 var elasticSearchSettings = appSettings.ElasticSearchSettings;
 
 services
@@ -55,6 +59,7 @@ if (app.Environment.IsDevelopment())
 
 app
     .UseMiddleware<ExceptionMiddleware>()
+    .UseAuthentication()
     .UseAuthorization()
     .UseHttpMetrics();
 
