@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FCG.Games.IntegrationTests;
 
@@ -34,6 +37,15 @@ public class FcgFixture : IDisposable
                                 reloadOnChange: true
                             )
                             .AddEnvironmentVariables();
+                    })
+                    .ConfigureTestServices(services =>
+                    {
+                        services.AddAuthentication(options =>
+                        {
+                            options.DefaultAuthenticateScheme = "Test";
+                            options.DefaultChallengeScheme = "Test";
+                        })
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
                     });
             });
 
