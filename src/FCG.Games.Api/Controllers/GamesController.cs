@@ -7,7 +7,6 @@ public class GamesController(IMediator mediator) : ControllerBase
 {
     [HttpGet("{key:guid}")]
     [ActionName(nameof(GetGameByIdAsync))]
-    [Authorize(Roles = Roles.User)]
     public async Task<ActionResult<GetGameResponse>> GetGameByIdAsync(
         [FromRoute] Guid key,
         CancellationToken ct

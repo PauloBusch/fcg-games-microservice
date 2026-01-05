@@ -28,7 +28,7 @@ services
 
 services
     .AddOpenApi()
-    .AddFcgGamesApiSwagger()
+    .AddFcgGamesApiSwagger(appSettings.AuthenticationSettings)
     .AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateGameUseCase>())
     .AddValidatorsFromAssemblyContaining<CreateGameInputValidator>()
     .AddTransient(typeof(IPipelineBehavior<,>), typeof(FluentValidatorPipeline<,>));
@@ -52,7 +52,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
 
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FCG Games API"));
+    app.UseSwaggerUI(c => {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FCG Games API");
+
+        c.OAuthClientId(appSettings.AuthenticationSettings.Audience);
+        c.OAuthAppName("FCG Games API - Swagger");
+        c.OAuthUsePkce();
+    });
 
     app.MapOpenApi();
 }

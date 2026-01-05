@@ -2,16 +2,51 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 namespace FCG.Games.Api._Common.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddFcgGamesApiSwagger(this IServiceCollection services)
+    public static IServiceCollection AddFcgGamesApiSwagger(
+        this IServiceCollection services,
+        AuthenticationSettings authenticationSettings)
     {
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "FCG Games API", Version = "v1" });
+
+            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.OAuth2,
+                Description = "Keycloak OAuth2 Authorization",
+                Flows = new OpenApiOAuthFlows
+                {
+                    Password = new OpenApiOAuthFlow
+                    {
+                        TokenUrl = new Uri($"{authenticationSettings.Authority}/protocol/openid-connect/token"),
+                        Scopes = new Dictionary<string, string>
+                        {
+                            { authenticationSettings.Audience, $"Access to {authenticationSettings.Audience}" }
+                        }
+                    }
+                }
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "oauth2"
+                        }
+                    },
+                    new[] { authenticationSettings.Audience }
+                }
+            });
         });
 
         return services;
@@ -38,8 +73,6 @@ public static class ServiceCollectionExtensions
 
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                RoleClaimType = Claims.Role,
-                NameClaimType = Claims.UserName,
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateIssuerSigningKey = true,
@@ -56,7 +89,7 @@ public static class ServiceCollectionExtensions
         services.AddAuthorization(auth =>
         {
             auth.AddPolicy(Policies.OnlyAdmin, p => p
-                .RequireClaim(Claims.Role, Roles.Admin));
+                .RequireClaim(ClaimTypes.Role, Roles.Admin));
 
             auth.DefaultPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
