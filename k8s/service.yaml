@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: fcg-games-service
   namespace: fcg-games
+  labels:
+    app: fcg-games
 spec:
   selector:
     app: fcg-games
